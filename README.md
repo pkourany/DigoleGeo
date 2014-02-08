@@ -1,9 +1,9 @@
 DigoleGeometry
 ==============
 
-Digole for Spark Core with adapted UTFT Geometry library
+Digole for Spark Core with adapted UTFT Geometry library, based on Digole library adapted for Spark Core by timb
 
-based on Digole library adapted for Spark Core by timb
+The demo is set for hardware SPI.
 
 Added UTFT Geometry library for TRIANGLE, FILLED TRIANGLE, PIE and ARC shapes.  This library ONLY uses drawLine class commands in its algorithms.
 
