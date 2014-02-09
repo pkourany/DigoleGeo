@@ -1,0 +1,163 @@
+
+#define _Digole_Serial_SPI_
+// This #include statement was automatically added by the Spark IDE.
+#include "digoleGeo.h"
+ 
+#define SC_W 160  //screen width in pixels
+#define SC_H 128  //screen Hight in pixels
+#define _TEXT_ 0
+#define _GRAPH_ 1
+
+#define VGA_BLACK   0x00
+#define VGA_BLUE    0x02 //0A
+#define VGA_LIME    0x14
+#define VGA_YELLOW  0x08
+
+const int max_x = 160;
+const int max_y = 128;
+
+  
+//DigoleSerialDisp mydisp(D2, D3, SS);
+DigoleSerialDisp mydisp(SS);
+ 
+int random(int maxRand) {
+    return rand() % maxRand;
+}
+
+
+
+ 
+void setup() {
+  Serial.begin(9600);
+  mydisp.begin();
+  //mydisp.clearScreen(); //CLear screen
+}
+ 
+void loop() {
+
+  int x1,x2,x3,y1,y2,y3,r,as,ae;
+
+  mydisp.clearScreen(); //CLear screen
+  mydisp.disableCursor();
+
+// Draw some random triangles
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=random(max_x);
+    y1=random(max_y);
+    x2=random(max_x);
+    y2=random(max_y);
+    mydisp.drawRoundRect(x1, y1, x2, y2);
+    delay(10);
+  }
+
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+
+// Draw some random triangles
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=random(max_x);
+    y1=random(max_y);
+    x2=random(max_x);
+    y2=random(max_y);
+    mydisp.fillRoundRect(x1, y1, x2, y2);
+    delay(10);
+  }
+
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+
+// Draw some random triangles
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=random(max_x);
+    y1=random(max_y);
+    x2=random(max_x);
+    y2=random(max_y);
+    x3=random(max_x);
+    y3=random(max_y);
+    mydisp.drawTriangle(x1, y1, x2, y2, x3, y3);
+  }
+
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+
+// Draw some random filled triangles
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=random(max_x);
+    y1=random(max_y);
+    x2=random(max_x);
+    y2=random(max_y);
+    x3=random(max_x);
+    y3=random(max_y);
+    mydisp.fillTriangle(x1, y1, x2, y2, x3, y3);
+    delay(10);
+  }
+
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+
+// Draw some random pies
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=30+random(max_x-60);
+    y1=30+random(max_y-60);
+    r=10+random(20);
+    as=random(360);
+    ae=random(360);
+    mydisp.drawPie(x1, y1, r, as, ae);
+    delay(10);
+  }
+
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+
+  mydisp.setColor(VGA_BLUE);
+  mydisp.drawFrame(0, 0, 160, 128);
+
+  mydisp.setColor(VGA_LIME);
+  mydisp.drawArc(80,128,108,-40,40,3);
+  for (int i=-40; i<=40; i+=8)
+    mydisp.drawArc(80,128,103,i,i,5);
+
+  int l = 0;
+  for (int i=0; i>=-40; i-=1)
+  {
+    mydisp.setColor(VGA_BLACK);
+    mydisp.drawArc(80,128,55,l,l,75);
+    l=i;
+    mydisp.setColor(VGA_YELLOW);
+    mydisp.drawArc(80,128,55,i,i,75);
+    delay(40-abs(i));
+  }
+
+  for (int i=-40; i<=40; i+=1)
+  {
+    mydisp.setColor(VGA_BLACK);
+    mydisp.drawArc(80,128,55,l,l,75);
+    l=i;
+    mydisp.setColor(VGA_YELLOW);
+    mydisp.drawArc(80,128,55,i,i,75);
+    delay(40-abs(i));
+  }
+
+  for (int i=40; i>=0; i-=1)
+  {
+    mydisp.setColor(VGA_BLACK);
+    mydisp.drawArc(80,128,55,l,l,75);
+    l=i;
+    mydisp.setColor(VGA_YELLOW);
+    mydisp.drawArc(80,128,55,i,i,75);
+    delay(40-i);
+  }
+
+  delay(1000);
+  
+}
