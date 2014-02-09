@@ -10,3 +10,6 @@ Added UTFT Geometry library for TRIANGLE, FILLED TRIANGLE, PIE and ARC shapes.  
 NOTE: in the demo portion of the code, delays were introduced in the drawfillTriangle and drawPie loops.  Without the delays, shapes were not drawn completely.  This may be due to a large number of drawLine primitives overwhelming the PIC on the Digole display.
 
 The demo code also includes a simple panel meter demo using only the drawArc command.
+
+UPDATE Feb 9/2014
+Added drawRoundRect() and fillRoundRect() primitives to digoleGeo.cpp and to demo code.
