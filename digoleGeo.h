@@ -395,6 +395,8 @@ public:
     void setColor(uint8_t); //set color for graphic function
     void backLightOn(void); //Turn on back light
     void backLightOff(void); //Turn off back light
+    void setScreenOn(void);  //Turn screen on 
+    void setScreenOff(void); //Turn screen off to save power
     void directCommand(uint8_t d); //send command to LCD drectly
     void directData(uint8_t d); //send data to LCD drectly
     void moveArea(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, char xoffset, char yoffset); //move a area of screen to another place
