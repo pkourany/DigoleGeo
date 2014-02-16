@@ -10,7 +10,8 @@ NOTE: in the demo portion of the code, delays were introduced in the drawfillTri
 
 The demo code also includes a simple panel meter demo using only the drawArc command.
 
-Feb 15,2014 - Add setScreenOn() and setScreenOff() functions
+Feb 15,2014 - Add setScreenOn() and setScreenOff() functions.
+
 Feb 9,2014 - Added drawRoundRect() and fillRoundRect() primitives to digoleGeo.cpp and to demo code.
 
 
