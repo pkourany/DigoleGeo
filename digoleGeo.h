@@ -265,14 +265,6 @@ public:
         Print::print("CS1");
     }
 
-    void setScreenOn(void) {
-        Print::print("SOO1");
-    }
-
-    void setScreenOff(void) {
-        Print::print("SOO0");
-    }
-
     void drawStr(uint8_t x, uint8_t y, const char *s) {
         Print::print("TP");
         write(x);
