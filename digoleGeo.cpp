@@ -1,4 +1,3 @@
-
 // **************
 // * Digole.cpp *
 // **************
@@ -160,6 +159,16 @@ void DigoleSerialDisp::backLightOn(void) {
 
 void DigoleSerialDisp::backLightOff(void) {
     Print::print("BL");
+    write((uint8_t) 0);
+}
+
+void DigoleSerialDisp::setScreenOn(void) {
+    Print::print("SOO");
+    write((uint8_t) 1);
+}
+
+void DigoleSerialDisp::setScreenOff(void) {
+    Print::print("SOO");
     write((uint8_t) 0);
 }
 
