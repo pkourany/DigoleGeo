@@ -105,12 +105,12 @@ public:
     }
 
     size_t write(uint8_t value) {
-/*      
+        
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
         shiftOut(_Data, _Clock, MSBFIRST, value);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
-*/
 
+/*
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; // Latch Low
         delayMicroseconds(1);
         for (uint8_t i = 0; i < 8; i++)  {
@@ -129,8 +129,53 @@ public:
         }
         delayMicroseconds(1);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin;     // Latch High (Data Latched)
-
+*/
         return 1;
+    }
+#endif
+
+#if defined(_Digole_Serial_I2C_)
+    DigoleSerialDisp(uint8_t add)
+    {
+        _I2Caddress = add;
+        _Comdelay=15;
+    }
+
+	void begin(void) {
+		Wire.begin();
+    }
+
+    void end(void) {
+    }
+
+    size_t write(uint8_t value) {
+        Wire.beginTransmission(_I2Caddress);
+        Wire.write(value);
+        Wire.endTransmission();
+        return 1;
+    }
+#endif
+
+#if defined(_Digole_Serial_UART_)
+
+DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
+    {
+        _mySerial = s;
+        _Baud = baud;
+        _Comdelay=2;
+    }
+
+    size_t write(uint8_t value) {
+        _mySerial->write(value);
+        return 1; // assume sucess
+    }
+
+    void begin(void) {
+        _mySerial->begin(9600);
+        _mySerial->print("SB");
+        _mySerial->println(_Baud);
+        delay(100);
+        _mySerial->begin(_Baud);
     }
 #endif
 
@@ -396,7 +441,10 @@ public:
     void uploadUserFont(int lon, const unsigned char *data, uint8_t sect); //upload user font
 
 private:
+    unsigned long _Baud;
+    USARTSerial *_mySerial;
     uint8_t _I2Caddress;
+    TwoWire *_myWire;
     uint8_t _Clock;
     uint8_t _Data;
     uint8_t _SS;
