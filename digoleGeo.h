@@ -23,14 +23,12 @@
 #ifndef DigoleSerialDisp_h
 #define DigoleSerialDisp_h
 
+#include "application.h"
 
-/* **************************** */
-/* *** Begin Digole Library *** */
-/* **************************** */
-
-// ************
-// * Digole.h *
-// ************
+const int max_x = 160;
+const int max_y = 128;
+//const int max_x = 128;
+//const int max_y = 64;
 
 class DigoleSerialDisp : public Print {
 public:
@@ -422,6 +420,9 @@ DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
     void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
     void drawArc(int x, int y, int r, int startAngle, int endAngle, int thickness);
     void drawPie(int x, int y, int r, int startAngle, int endAngle);
+    void drawEllipse(int CX, int CY, int XRadius, int YRadius);
+    void drawFilledEllipse(int CX, int CY, int XRadius, int YRadius);
+
 
 	//
 	// Graphic LCD/OLED Adapter Functions (Special Functions)
@@ -449,6 +450,9 @@ private:
     uint8_t _Data;
     uint8_t _SS;
     uint8_t _Comdelay;
+
+    void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
+    void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
 
 };
 #endif
