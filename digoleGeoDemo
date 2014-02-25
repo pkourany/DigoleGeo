@@ -1,5 +1,8 @@
+#define _Digole_Serial_SPI_           //Select Hardware SPI communications
+//#define _Digole_Serial_SoftSPI_       //Select SOFT SPI communications
+//#define _Digole_Serial_I2C_           //Select I2C communications
+//#define _Digole_Serial_UART_            //Select USART (Serial1 or Serial2) communications
 
-#define _Digole_Serial_SPI_
 // This #include statement was automatically added by the Spark IDE.
 #include "digoleGeo.h"
  
@@ -8,17 +11,22 @@
 #define _TEXT_ 0
 #define _GRAPH_ 1
 
+//Colours defined as 8-bit value RRRG GGBB
 #define VGA_BLACK   0x00
-#define VGA_BLUE    0x02 //0A
+#define VGA_WHITE   0x01
+#define VGA_BLUE    0x03
+#define VGA_DARKRED 0x20
+
+#define VGA_RED     0xE0
+#define VGA_GREEN   0x1C
 #define VGA_LIME    0x14
-#define VGA_YELLOW  0x08
+#define VGA_YELLOW  0xFC
 
-const int max_x = 160;
-const int max_y = 128;
 
-  
-//DigoleSerialDisp mydisp(D2, D3, SS);
-DigoleSerialDisp mydisp(SS);
+//DigoleSerialDisp mydisp(D2, D3, SS);      //SOFT SPI setup - specify DATA, CLOCK, SS pins
+DigoleSerialDisp mydisp(SS);              //Hardware SPI setup - specify SS pin
+//DigoleSerialDisp mydisp('\x27');    //I2C specified - specify Pointer to Wire object, I2C address of Digole
+//DigoleSerialDisp mydisp(&Serial1, 9600);    //USART (Serial 1 or 2) - specify &Serial1 or &Serial2 and baudrate
  
 int random(int maxRand) {
     return rand() % maxRand;
@@ -31,6 +39,8 @@ void setup() {
   Serial.begin(9600);
   mydisp.begin();
   //mydisp.clearScreen(); //CLear screen
+  mydisp.backLightOn();
+  mydisp.setColor(1);
 }
  
 void loop() {
@@ -42,7 +52,7 @@ void loop() {
 
 // Draw some random triangles
   for (int i=0; i<50; i++)
-  {
+  { 
     mydisp.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
@@ -64,7 +74,7 @@ void loop() {
     x2=random(max_x);
     y2=random(max_y);
     mydisp.fillRoundRect(x1, y1, x2, y2);
-    delay(10);
+    delay(15);
   }
 
   delay(1000);
@@ -97,7 +107,7 @@ void loop() {
     x3=random(max_x);
     y3=random(max_y);
     mydisp.fillTriangle(x1, y1, x2, y2, x3, y3);
-    delay(10);
+    delay(15);
   }
 
   delay(1000);
@@ -111,8 +121,7 @@ void loop() {
     y1=30+random(max_y-60);
     r=10+random(20);
     as=random(360);
-    ae=random(360);
-    mydisp.drawPie(x1, y1, r, as, ae);
+    ae=random(360);    mydisp.drawPie(x1, y1, r, as, ae);
     delay(10);
   }
 
@@ -158,6 +167,31 @@ void loop() {
     delay(40-i);
   }
 
-  delay(1000);
+// Draw some random ellipses
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=20+random(max_x-20);
+    y1=20+random(max_y-20);
+    x2=5+random(30);
+    y2=5+random(30);
+    mydisp.drawEllipse(x1, y1, x2, y2);
+    delay(100);
+  }
+
+  delay(2000);
+  mydisp.clearScreen(); //CLear screen
   
+// Draw some random filled ellipses
+  for (int i=0; i<50; i++)
+  {
+    mydisp.setTrueColor(random(255), random(255), random(255));
+    x1=20+random(max_x-20);
+    y1=20+random(max_y-20);
+    x2=5+random(30);
+    y2=5+random(30);
+    mydisp.drawFilledEllipse(x1, y1, x2, y2);
+    delay(100);
+  }
+
 }
