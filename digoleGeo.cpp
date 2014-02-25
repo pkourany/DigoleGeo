@@ -1,3 +1,4 @@
+
 // **************
 // * Digole.cpp *
 // **************
@@ -426,7 +427,104 @@ void DigoleSerialDisp::drawPie(int x, int y, int r, int startAngle, int endAngle
 	drawLine(x, y, px, py);
 }
 
+void DigoleSerialDisp::drawEllipse(int CX, int CY, int XRadius, int YRadius) {
+    plotEllipse(CX, CY, XRadius, YRadius, 0);
+}
+
+void DigoleSerialDisp::drawFilledEllipse(int CX, int CY, int XRadius, int YRadius) {
+    plotEllipse(CX, CY, XRadius, YRadius, 1);
+}
+
+void DigoleSerialDisp::plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill) {
+	int X, Y;
+	int XChange, YChange;
+	int EllipseError;
+	int TwoASquare,TwoBSquare;
+	int StoppingX, StoppingY;
+	TwoASquare = 2*XRadius*XRadius;
+	TwoBSquare = 2*YRadius*YRadius;
+	X = XRadius;
+	Y = 0;
+	XChange = YRadius*YRadius*(1-2*XRadius);
+
+	YChange = XRadius*XRadius;
+	EllipseError = 0;
+	StoppingX = TwoBSquare*XRadius;
+	StoppingY = 0;
+
+	while ( StoppingX >=StoppingY ) //first set of points,y'>-1
+	{
+		plot4EllipsePoints(CX,CY,X,Y,fill);
+		Y++;
+		StoppingY=StoppingY+ TwoASquare;
+		EllipseError = EllipseError+ YChange;
+		YChange=YChange+TwoASquare;
+		if ((2*EllipseError + XChange) > 0 ) {
+			X--;
+			StoppingX=StoppingX- TwoBSquare;
+			EllipseError=EllipseError+ XChange;
+			XChange=XChange+TwoBSquare;
+		}
+	}
+	// first point set is done; start the 2nd set of points
+	Y = YRadius;
+	X = 0;
+	YChange = XRadius*XRadius*(1-2*YRadius);
+	XChange = YRadius*YRadius;
+	EllipseError = 0;
+	StoppingY = TwoASquare*YRadius;
+	StoppingX = 0;
+	while ( StoppingY >=StoppingX ) //2nd set of points, y'< -1
+	{
+		plot4EllipsePoints(CX,CY,X,Y,fill);
+		X++;
+		StoppingX=StoppingX + TwoBSquare;
+		EllipseError=EllipseError+ XChange;
+		XChange=XChange+TwoBSquare;
+		if ((2*EllipseError + YChange) > 0 ) {
+			Y--;
+			StoppingY=StoppingY- TwoASquare;
+			EllipseError=EllipseError+ YChange;
+			YChange=YChange+TwoASquare;
+		}
+	}
+}
+
+void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill) {
+    int _CXaddX, _CXsubX, _CYaddY, _CYsubY;
+
+    _CXaddX = (CX+X); 
+    _CXsubX = (CX-X);
+    _CYaddY = (CY+Y);
+    _CYsubY = (CY-Y);
+    
+	if (fill == 0) {    //Not fill so use pixels for outline
+	    //For each quadrant, if point is outside display area, don't draw it
+	    if ((_CXaddX <= max_x) || (_CYaddY <= max_y))               
+		    drawPixel(_CXaddX, _CYaddY);                //{point in quadrant 1}
+		    
+	    if ((_CXsubX >= 0) || (_CYaddY <= max_y))
+		    drawPixel(_CXsubX, _CYaddY);                //{point in quadrant 2}
+
+	    if ((_CXsubX >= 0) || (_CYaddY >= 0))
+		    drawPixel(_CXsubX, _CYsubY);                //{point in quadrant 3}
+
+	    if ((_CXaddX <= max_x) || (_CYaddY >= 0))
+		    drawPixel(_CXaddX, _CYsubY);                //{point in quadrant 4}
+	}
+	else {
+		// to fill rather than draw a line, plot between the points
+		// Constrain the endpoits to inside the display area
+        _CXaddX = constrain(_CXaddX, 0, max_x); 
+        _CXsubX = constrain(_CXsubX, 0, max_x);
+        _CYaddY = constrain(_CYaddY, 0, max_y);
+        _CYsubY = constrain(_CYsubY, 0, max_y);
+
+        drawLine(_CXaddX, _CYaddY, _CXsubX, _CYaddY);
+		drawLine(_CXsubX, _CYsubY, _CXaddX, _CYsubY);
+	}
+}
+
 /* ************************** */
 /* *** End Digole Library *** */
 /* ************************** */
- 
