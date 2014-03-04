@@ -184,65 +184,65 @@ DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
     size_t println(const String &v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(const char v[]) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(char v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(double v, int base = 2) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(const Printable& v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
     size_t println(void) {
-        Print::println("\x0dTRT");
+        Print::print("TRT");
     }
 
 
