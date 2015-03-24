@@ -1,34 +1,23 @@
 /* *********************************************************************************** */
-/* Digole Serial Display Library - Version 001 - Copyright 2014 Timothy Brown / Digole */
-/* *********************************************************************************** */
-/* Setup the class for your display *before* void setup():                             */
-/*                                                                                     */
-/* DigoleSerialDisp digole(arguments);                                                 */
-/*                                                                                     */
-/* Arguments:                                                                          */
-/*                                                                                     */
-/* [SPI] Chip Select Pin (SS for the default pin, 255 if CS is hardwired low.)         */
-/* [SoftSPI] Data Pin, Clock Pin, Chip Select Pin (255 if CS is hardwired low.)        */
-/* [I2C] Data Pin, Clock Pin                                                           */
-/* [UART] TX Pin                                                                       */
-/*                                                                                     */
-/* To use, call digole.begin(); *inside* void setup(); (or loop) to start the display. */
-/* You may also call digole.end(); to release the pins and clear the I2C/SPI/UART bus. */
+/* Digole Serial Display Library - Version 006					       */
+/* Copyright 2014 Timothy Brown / Paul Kourany / Digole 			       */
 /* *********************************************************************************** */
 
-/* ************************************************* */
-/* !Important! Change XXXX to the desired interface: */
-/*              SPI, SoftSPI, I2C, UART              */
-/* ************************************************* */
+// **********************
+// * DigoleSerialDisp.h *
+// **********************
+
 #ifndef DigoleSerialDisp_h
 #define DigoleSerialDisp_h
 
 #include "application.h"
 
-const int max_x = 160;
-const int max_y = 128;
-//const int max_x = 128;
-//const int max_y = 64;
+#define _TEXT_ 0
+#define _GRAPH_ 1
+
+// Set display width and height in pixels - common Digole display sizes are (HxW): 128x64, 160x128, 96x64
+#define DISP_W  160  //screen width in pixels
+#define DISP_H  128  //screen Hight in pixels
 
 class DigoleSerialDisp : public Print {
 public:
@@ -37,23 +26,19 @@ public:
 // UART/I2C/SoftSPI/SPI Functions
 //
 
-#if defined(_Digole_Serial_SPI_)
+#if defined(_Digole_Serial_SPI_)		//Hardware SPI
     DigoleSerialDisp(uint8_t pinSS) {
-        
         _Comdelay = 10;
         _SS = pinSS;
-        
 	}
     
     void begin(void) {
-        
-        pinMode(_SS, OUTPUT);
-        digitalWrite(_SS, HIGH);
+        //pinMode(_SS, OUTPUT);
+        //digitalWrite(_SS, HIGH);
         SPI.setBitOrder(MSBFIRST);
         SPI.setClockDivider(SPI_CLOCK_DIV32);
         SPI.setDataMode(1);
-        SPI.begin();
-        
+        SPI.begin(_SS);
     }
     
     void end(void) {
@@ -62,38 +47,30 @@ public:
     }
 
     size_t write(uint8_t value) {
-        
-        PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
+        PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin;	//Low
         delayMicroseconds(1);
-        //SPI.setDataMode(3);
         SPI.transfer(value);
-        //SPI.setDataMode(0);
         delayMicroseconds(1);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
         return 1;
     }
 #endif
 
-#if defined(_Digole_Serial_SoftSPI_)
+#if defined(_Digole_Serial_SoftSPI_)		//Sofware SPI
     DigoleSerialDisp(uint8_t pinData, uint8_t pinClock, uint8_t pinSS) {
-        
         _Comdelay = 1;
-        
         _Clock = pinClock;
         _Data = pinData;
         _SS = pinSS;
-        
     }
     
     void begin(void) {
-        
         pinMode(_Clock, OUTPUT);
         pinMode(_Data, OUTPUT);
         pinMode(_SS, OUTPUT);
         digitalWrite(_Clock, LOW);
         digitalWrite(_Data, LOW);
         digitalWrite(_SS, HIGH);
-        
     }
     
     void end(void) {
@@ -103,38 +80,15 @@ public:
     }
 
     size_t write(uint8_t value) {
-        
-        PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
+        PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin;	//Low
         shiftOut(_Data, _Clock, MSBFIRST, value);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
-
-/*
-        PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; // Latch Low
-        delayMicroseconds(1);
-        for (uint8_t i = 0; i < 8; i++)  {
-            if (value & (1 << (7-i))) {     // walks down mask from bit 7 to bit 0
-                PIN_MAP[_Data].gpio_peripheral->BSRR = PIN_MAP[_Data].gpio_pin; // Data High
-            } 
-            else {
-                PIN_MAP[_Data].gpio_peripheral->BRR = PIN_MAP[_Data].gpio_pin; // Data Low
-            }
-            asm volatile("mov r0, r0" "\n\t" "nop" "\n\t" "nop" "\n\t" "nop" "\n\t" ::: "r0", "cc", "memory");
-            asm volatile("mov r0, r0" "\n\t" "nop" "\n\t" "nop" "\n\t" "nop" "\n\t" ::: "r0", "cc", "memory");
-            PIN_MAP[_Clock].gpio_peripheral->BSRR = PIN_MAP[_Clock].gpio_pin; // Clock High (Data Shifted In)
-            asm volatile("mov r0, r0" "\n\t" "nop" "\n\t" "nop" "\n\t" "nop" "\n\t" ::: "r0", "cc", "memory");
-            asm volatile("mov r0, r0" "\n\t" "nop" "\n\t" "nop" "\n\t" "nop" "\n\t" ::: "r0", "cc", "memory");
-            PIN_MAP[_Clock].gpio_peripheral->BRR = PIN_MAP[_Clock].gpio_pin; // Clock Low
-        }
-        delayMicroseconds(1);
-        PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin;     // Latch High (Data Latched)
-*/
         return 1;
     }
 #endif
 
-#if defined(_Digole_Serial_I2C_)
-    DigoleSerialDisp(uint8_t add)
-    {
+#if defined(_Digole_Serial_I2C_)		//I2C
+    DigoleSerialDisp(uint8_t add) {
         _I2Caddress = add;
         _Comdelay=15;
     }
@@ -154,10 +108,9 @@ public:
     }
 #endif
 
-#if defined(_Digole_Serial_UART_)
+#if defined(_Digole_Serial_UART_)		//Serial
 
-DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
-    {
+DigoleSerialDisp(USARTSerial *s, unsigned long baud) {		//UART set up
         _mySerial = s;
         _Baud = baud;
         _Comdelay=2;
@@ -168,12 +121,13 @@ DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
         return 1; // assume sucess
     }
 
-    void begin(void) {
+    void begin() {
         _mySerial->begin(9600);
         _mySerial->print("SB");
         _mySerial->println(_Baud);
         delay(100);
         _mySerial->begin(_Baud);
+        
     }
 #endif
 
@@ -181,117 +135,117 @@ DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
     // Print Functions
     //
 
-    size_t println(const String &v) {
+    void println(const String &v) {
         preprint();
         Print::println(v);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(const char v[]) {
+    void println(const char v[]) {
         preprint();
         Print::println(v);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(char v) {
+    void println(char v) {
         preprint();
         Print::println(v);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(unsigned char v, int base = DEC) {
+    void println(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(int v, int base = DEC) {
+    void println(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(unsigned int v, int base = DEC) {
+    void println(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(long v, int base = DEC) {
+    void println(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(unsigned long v, int base = DEC) {
+    void println(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(double v, int base = 2) {
+    void println(double v, int base = 2) {
         preprint();
         Print::println(v, base);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(const Printable& v) {
+    void println(const Printable& v) {
         preprint();
         Print::println(v);
-        Print::print("TRT");
+        Print::println("\x0dTRT");
     }
 
-    size_t println(void) {
-        Print::print("TRT");
+    void println(void) {
+        Print::println("\x0dTRT");
     }
 
 
-    size_t print(const String &v) {
-        preprint();
-        Print::println(v);
-    }
-
-    size_t print(const char v[]) {
+    void print(const String &v) {
         preprint();
         Print::println(v);
     }
 
-    size_t print(char v) {
+    void print(const char v[]) {
         preprint();
         Print::println(v);
     }
 
-    size_t print(unsigned char v, int base = DEC) {
+    void print(char v) {
+        preprint();
+        Print::println(v);
+    }
+
+    void print(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(int v, int base = DEC) {
+    void print(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(unsigned int v, int base = DEC) {
+    void print(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(long v, int base = DEC) {
+    void print(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(unsigned long v, int base = DEC) {
+    void print(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(double v, int base = 2) {
+    void print(double v, int base = 2) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(const Printable& v) {
+    void print(const Printable& v) {
         preprint();
         Print::println(v);
     }
@@ -450,6 +404,9 @@ private:
     uint8_t _Data;
     uint8_t _SS;
     uint8_t _Comdelay;
+
+    const int _max_x = DISP_W;
+    const int _max_y = DISP_H;
 
     void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
     void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
