@@ -7,7 +7,7 @@
 // * DigoleGeo.cpp *
 // ************************
 
-#include "DigoleSerialDisp.h"
+#include "DigoleGeo.h"
 #include <math.h>
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
