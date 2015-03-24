@@ -5,8 +5,12 @@ Digole display library for Spark Core extended to include extra geometry primiti
 
 The demo is set for hardware UART (Serial).
 
-Added geometry extensions for TRIANGLE, FILLED TRIANGLE, PIE, FILLED PIE, ARC and FILLED ARC shapes.  This library ONLY uses drawLine class commands in its algorithms.
-NOTE: in the demo portion of the code, delays were introduced in the drawfillTriangle and drawPie loops.  Without the delays, shapes were not drawn completely.  This may be due to a large number of drawLine primitives overwhelming the PIC on the Digole display.
+Added geometry extensions for TRIANGLE, FILLED TRIANGLE, PIE, FILLED PIE and ARC shapes.  The geometry extensions ONLY use the drawLine class commands in its algorithms.
+
+NOTE
+----
+
+In the demo portion of the code, delays were introduced in the drawfillTriangle and drawPie loops.  Without the delays, shapes were not drawn completely.  This may be due to a large number of drawLine primitives overwhelming the PIC on the Digole display.
 
 The demo code also includes a simple panel meter demo using only the drawArc command.
 
