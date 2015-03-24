@@ -1,11 +1,11 @@
-DigoleGeometry
-==============
+DigoleGeo
+=========
 
-Digole for Spark Core with adapted UTFT Geometry library, based on Digole library adapted for Spark Core by timb
+Digole display library for Spark Core extended to include extra geometry primitives.
 
-The demo is set for hardware SPI.
+The demo is set for hardware UART (Serial).
 
-Added UTFT Geometry library for TRIANGLE, FILLED TRIANGLE, PIE and ARC shapes.  This library ONLY uses drawLine class commands in its algorithms.
+Added geometry extensions for TRIANGLE, FILLED TRIANGLE, PIE, FILLED PIE, ARC and FILLED ARC shapes.  This library ONLY uses drawLine class commands in its algorithms.
 NOTE: in the demo portion of the code, delays were introduced in the drawfillTriangle and drawPie loops.  Without the delays, shapes were not drawn completely.  This may be due to a large number of drawLine primitives overwhelming the PIC on the Digole display.
 
 The demo code also includes a simple panel meter demo using only the drawArc command.
