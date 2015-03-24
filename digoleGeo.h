@@ -4,11 +4,11 @@
 /* *********************************************************************************** */
 
 // **********************
-// * DigoleSerialDisp.h *
+// * DigoleGeo.h *
 // **********************
 
-#ifndef DigoleSerialDisp_h
-#define DigoleSerialDisp_h
+#ifndef DigoleGeo_h
+#define DigoleGeo_h
 
 #include "application.h"
 
