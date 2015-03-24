@@ -1,36 +1,19 @@
+/* *********************************************************************************** */
+/* Digole Serial Display Library (With primitives extension) - Version 006					                       */
+/* Copyright 2014 Paul Kourany / Timothy Brown / Digole 			                   */
+/* *********************************************************************************** */
 
-// **************
-// * Digole.cpp *
-// **************
+// ************************
+// * DigoleGeo.cpp *
+// ************************
 
-#include "digoleGeo.h" 
+#include "DigoleSerialDisp.h"
 #include <math.h>
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
 
 const float pi = 3.1415926535;
 
-/*
-// Communication set up command
- * "SB":Baud (ascII bytes end with 0x00/0x0A/0x0D) -- set UART Baud Rate
- * "SI2CA":Address(1 byte <127) -- Set I2C address, default address is:0x27
- * "DC":1/0(1byte) -- set config display on/off, if set to 1, displayer will display current commucation setting when power on
-// Text Function command
- * "CL": -- Clear screen--OK
- * "CS":1/0 (1 byte)-- Cursor on/off
- * "TP":x(1 byte) y(1 byte) -- set text position
- * "TT":string(bytes) end with 0x00/0x0A/0x0D -- display string under regular mode
-// Graphic function command
- * "GP":x(1byte) y(1byte) -- set current graphic position
- * "DM":"C/!/~/&/|/^"(ASCII 1byte) -- set drawing mode--C="Copy",! and ~ = "Not", & = "And", | = "Or", ^ = "Xor"
- * "SC":1/0 (1byte) -- set draw color--only 1 and 0
- * "LN":x0(1byte) y0(1byte) x1(1byte) y2(1byte)--draw line from x0,y0 to x1,y1,set new pot to x1,y1
- * "LT":x(1byte) y(1byte) -- draw line from current pos to x,y
- * "CC":x(1byte) y(1byte) ratio(byte) -- draw circle at x,y with ratio
- * "DP":x(1byte) y(1byte) Color(1byte) -- draw a pixel--OK
- * "DR":x0(1byte) y0(1byte) x1(1byte) y2(1byte)--draw rectangle, top-left:x0,y0; right-bottom:x1,y1
- * "FR":x0(1byte) y0(1byte) x1(1byte) y2(1byte)--draw filled rectangle, top-left:x0,y0; right-bottom:x1,y1
-*/
 
 void DigoleSerialDisp::preprint(void) {
     //write((uint8_t)0);
@@ -142,6 +125,7 @@ void DigoleSerialDisp::nextTextLine(void) {
     write((uint8_t) 0);
     Print::print("TRT");
 }
+
 
 void DigoleSerialDisp::setFont(uint8_t font) {
     Print::print("SF");
@@ -267,8 +251,6 @@ void DigoleSerialDisp::setTrueColor(uint8_t r, uint8_t g, uint8_t b) {	//Set tru
 
 void DigoleSerialDisp::drawRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 		swap(x1, x2);
 
@@ -291,8 +273,6 @@ void DigoleSerialDisp::drawRoundRect(int x1, int y1, int x2, int y2)
 
 void DigoleSerialDisp::fillRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 		swap(x1, x2);
 
@@ -500,31 +480,28 @@ void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill
     
 	if (fill == 0) {    //Not fill so use pixels for outline
 	    //For each quadrant, if point is outside display area, don't draw it
-	    if ((_CXaddX <= max_x) || (_CYaddY <= max_y))               
+	    if ((_CXaddX <= _max_x) || (_CYaddY <= _max_y))               
 		    drawPixel(_CXaddX, _CYaddY);                //{point in quadrant 1}
 		    
-	    if ((_CXsubX >= 0) || (_CYaddY <= max_y))
+	    if ((_CXsubX >= 0) || (_CYaddY <= _max_y))
 		    drawPixel(_CXsubX, _CYaddY);                //{point in quadrant 2}
 
 	    if ((_CXsubX >= 0) || (_CYaddY >= 0))
 		    drawPixel(_CXsubX, _CYsubY);                //{point in quadrant 3}
 
-	    if ((_CXaddX <= max_x) || (_CYaddY >= 0))
+	    if ((_CXaddX <= _max_x) || (_CYaddY >= 0))
 		    drawPixel(_CXaddX, _CYsubY);                //{point in quadrant 4}
 	}
 	else {
 		// to fill rather than draw a line, plot between the points
 		// Constrain the endpoits to inside the display area
-        _CXaddX = constrain(_CXaddX, 0, max_x); 
-        _CXsubX = constrain(_CXsubX, 0, max_x);
-        _CYaddY = constrain(_CYaddY, 0, max_y);
-        _CYsubY = constrain(_CYsubY, 0, max_y);
+        _CXaddX = constrain(_CXaddX, 0, _max_x); 
+        _CXsubX = constrain(_CXsubX, 0, _max_x);
+        _CYaddY = constrain(_CYaddY, 0, _max_y);
+        _CYsubY = constrain(_CYsubY, 0, _max_y);
 
         drawLine(_CXaddX, _CYaddY, _CXsubX, _CYaddY);
 		drawLine(_CXsubX, _CYsubY, _CXaddX, _CYsubY);
 	}
 }
 
-/* ************************** */
-/* *** End Digole Library *** */
-/* ************************** */
