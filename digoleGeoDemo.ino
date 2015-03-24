@@ -28,7 +28,7 @@
 /* Be sure to #include "DigoleSerialDisp.h" *after* the #define above or your compile will fail. */
 /* !!! Don't forget to set display width and display height in file DigoleSerialDisp.h !!!!! */
 
-#include "DigoleSerialDisp.h"
+#include "DigoleGeo.h"
 
 /* Below are sane defaults for the various interfaces. Uncomment one and customize as needed! */
 //DigoleSerialDisp mydisp(D2, D3, SS);			//SOFT SPI setup - specify DATA, CLOCK, SS pins
