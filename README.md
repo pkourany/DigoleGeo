@@ -1,27 +1,34 @@
 DigoleGeo
 =========
 
-Digole Serial Display Library with Graphic Primitives Extensions
-
-by Paul Kourany (peekay123), Feb 4, 2016
-
-Digole Digital Solutions: www.digole.com
-
 Digole display library for Particle devices, extended to include extra geometry primitives:
 
+by Paul Kourany (peekay123), Feb 4, 2016 and Digole Digital Solutions: www.digole.com
+
+New Graphics Primitives
+-------
 `drawRoundRect(x1, y1, x2, y2);`
+
 `fillRoundRect(x1, y1, x2, y2);`
+
 `drawTriangle(x1, y1, x2, y2, x3, y3);`
+
 `fillTriangle(x1, y1, x2, y2, x3, y3);`
+
 `drawArc(x, y, r, startAngle, endAngle, thickness);`
+
 `drawPie(x, y, r, startAngle, endAngle);`
+
 `drawEllipse(CX, CY, XRadius, YRadius);`
+
 `drawFilledEllipse(CX, CY, XRadius, YRadius);`
 
 As well as, display geometry functions:
 
 `setNativeDisplaySize(int w, int h);`
+
 `getNativeDisplayWidth(void);`
+
 `getNativeDisplayHeight(void);`
 
 The demo is set for hardware UART (Serial).
