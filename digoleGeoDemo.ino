@@ -32,7 +32,7 @@ int max_x, max_y;
 //DigoleSerialDisp mydisp('\x27');    //I2C specified - specify Pointer to Wire object, I2C address of Digole
 DigoleSerialDisp mydisp(&Serial1, 115200);    //USART (Serial 1 or 2) - specify &Serial1 or &Serial2 and baudrate
 
- 
+
 void setup() {
   Serial.begin(9600);
   mydisp.begin();
@@ -41,7 +41,7 @@ void setup() {
   mydisp.backLightOn();
   mydisp.setColor(1);
 }
- 
+
 void loop() {
 
   int x1,x2,x3,y1,y2,y3,r,as,ae;
@@ -51,7 +51,7 @@ void loop() {
 
 // Draw some random round rectangles
   for (int i=0; i<50; i++)
-  { 
+  {
     mydisp.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
@@ -169,7 +169,7 @@ void loop() {
 
   delay(1000);
   mydisp.clearScreen(); //CLear screen
-  
+
 // Draw some random ellipses
   for (int i=0; i<50; i++)
   {
@@ -184,7 +184,7 @@ void loop() {
 
   delay(1000);
   mydisp.clearScreen(); //CLear screen
-  
+
 // Draw some random filled ellipses
   for (int i=0; i<50; i++)
   {

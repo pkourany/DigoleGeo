@@ -8,7 +8,7 @@
 /*	setNativeDisplaySize(int w, int h);
 /*	getNativeDisplayWidth(void);
 /*	getNativeDisplayHeight(void);
-/*	
+/*
 /*  drawRoundRect(x1, y1, x2, y2);
 /*  fillRoundRect(x1, y1, x2, y2);
 /*  drawTriangle(x1, y1, x2, y2, x3, y3);
@@ -434,7 +434,7 @@ int DigoleSerialDisp::setNativeDisplaySize(int w, int h)
 {
 	if ((w > 320 || w < 0) || (h > 240 || h < 0))
 		return -1;
-	
+
 	_max_x = w;
 	_max_y = h;
 	return 0;
@@ -527,7 +527,7 @@ void DigoleSerialDisp::fillTriangle(int x1, int y1, int x2, int y2, int x3, int 
 	int16_t y, ly;
 
 	if (y1 > y2) {
-		swap(y1, y2); 
+		swap(y1, y2);
 		swap(x1, x2);
 	}
 	if (y2 > y3) {
@@ -538,7 +538,7 @@ void DigoleSerialDisp::fillTriangle(int x1, int y1, int x2, int y2, int x3, int 
 		swap(y1, y2);
 		swap(x1, x2);
 	}
-	
+
 	if(y1 == y3) {	// Single line triangles
 		xs = xe = x1;
 		if(x2 < xs)			xs = x2;
@@ -548,18 +548,18 @@ void DigoleSerialDisp::fillTriangle(int x1, int y1, int x2, int y2, int x3, int 
 		drawHLine(xs, y1, xe-xs);
 		return;
 	}
-	
+
 	// Upper part
 	if (y2 == y3) ly = y2;
 	else          ly = y2-1;
-	
+
 	for(y=y1; y<=ly; y++) {
 		xs = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
 		xe = x1 + (x3 - x1) * (y - y1) / (y3 - y1);
 		drawHLine(xs, y, xe-xs);
 		delayMicroseconds(1000);
 	}
-	
+
 	// Lower part
 	for(; y<=y3; y++) {
 		xs = x2 + (x3 - x2) * (y - y2) / (y3 - y2);
@@ -576,7 +576,7 @@ void DigoleSerialDisp::drawArc(int x, int y, int r, int startAngle, int endAngle
 
 	startAngle -= 90;
 	endAngle   -= 90;
-	
+
 	if (startAngle!=endAngle) {
 		for (int i=0; i<thickness; i++) {
 			px = x + cos((startAngle*pi)/180) * (r+rDelta+i);
@@ -607,7 +607,7 @@ void DigoleSerialDisp::drawPie(int x, int y, int r, int startAngle, int endAngle
 	endAngle   -= 90;
 	if (startAngle>endAngle)
 		startAngle -= 360;
-	
+
 	px = x + cos((startAngle*pi)/180) * r;
 	py = y + sin((startAngle*pi)/180) * r;
 	drawLine(x, y, px, py);
@@ -687,18 +687,18 @@ void DigoleSerialDisp::plotEllipse(int CX, int CY, int XRadius, int YRadius, int
 void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill) {
     int _CXaddX, _CXsubX, _CYaddY, _CYsubY;
 
-    _CXaddX = (CX+X); 
+    _CXaddX = (CX+X);
     _CXsubX = (CX-X);
     _CYaddY = (CY+Y);
     _CYsubY = (CY-Y);
-    
+
 	if (fill == 0) {    //Not fill so use pixels for outline
 	    //For each quadrant, if point is outside display area, don't draw it
-	    if ((_CXaddX <= _max_x) || (_CYaddY <= _max_y)) {               
+	    if ((_CXaddX <= _max_x) || (_CYaddY <= _max_y)) {
 		    drawPixel(_CXaddX, _CYaddY);                //{point in quadrant 1}
 			delayMicroseconds(1000);
 		}
-		    
+
 	    if ((_CXsubX >= 0) || (_CYaddY <= _max_y)){
 		    drawPixel(_CXsubX, _CYaddY);                //{point in quadrant 2}
 			delayMicroseconds(1000);
@@ -710,12 +710,12 @@ void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill
 	    if ((_CXaddX <= _max_x) || (_CYaddY >= 0)) {
 		    drawPixel(_CXaddX, _CYsubY);                //{point in quadrant 4}
 			delayMicroseconds(1000);
-		}		
+		}
 	}
 	else {
 		// to fill rather than draw a line, plot between the points
 		// Constrain the endpoits to inside the display area
-        _CXaddX = constrain(_CXaddX, 0, _max_x); 
+        _CXaddX = constrain(_CXaddX, 0, _max_x);
         _CXsubX = constrain(_CXsubX, 0, _max_x);
         _CYaddY = constrain(_CYaddY, 0, _max_y);
         _CYsubY = constrain(_CYsubY, 0, _max_y);
@@ -726,4 +726,3 @@ void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill
 		delayMicroseconds(1000);
 	}
 }
-
